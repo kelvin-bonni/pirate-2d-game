@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CellCoordinate {
     int[] coordinate;
-    int amount;
+    Integer amount;
 }

@@ -9,6 +9,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BusinessLogic {
@@ -20,9 +21,18 @@ public class BusinessLogic {
         array.add(Arrays.asList(x, y));
 
         while (x != xn & y != yn){
-            CellCoordinate fromRight = this.goRight(arrayOfArrays, x, y);
-            CellCoordinate fromUp = this.goUp(arrayOfArrays, x, y);
+            //make a choice to go right or up
+            //use the greedy algo (eg. Hill climbing)
+            //pick closest cell with greater number of treasure
             CellCoordinate next = null;
+            CellCoordinate fromRight;
+            CellCoordinate fromUp;
+            try {
+                fromRight = this.goRight(arrayOfArrays, x, y);
+                fromUp = this.goUp(arrayOfArrays, x, y);
+            }catch (ArrayIndexOutOfBoundsException e){
+                return null;
+            }
 
             int maxAmount = Math.max(fromRight.getAmount(), fromUp.getAmount());
 
@@ -30,7 +40,8 @@ public class BusinessLogic {
                 next = fromRight;
             if (maxAmount == fromUp.getAmount())
                 next = fromUp;
-            else
+
+            if (Objects.isNull(next))
                 return null;
 
             x = next.getCoordinate()[0];
@@ -42,23 +53,23 @@ public class BusinessLogic {
         return new PathFindResponse(array, score);
     }
 
-    public CellCoordinate goRight(Cell[][] arrayOfArrays, int x, int y){
-        Cell cell = new Cell();
-        try {
-            cell = arrayOfArrays[x+1][y];
-        }catch (ArrayIndexOutOfBoundsException exception){
-            return null;
-        }
-        return new CellCoordinate(new int[]{x + 1, y},cell.getAmount());
+    public CellCoordinate goRight(Cell[][] arrayOfArrays, int x, int y) throws ArrayIndexOutOfBoundsException{
+        //Increase x by 1 and maintain y
+        //If array bound is exceeded throw an exception
+        Cell cell = arrayOfArrays[x+1][y];
+        Integer amount = null;
+        if (Objects.equals(cell.getType(), "coins"))
+            amount = cell.getAmount();
+        return new CellCoordinate(new int[]{x + 1, y}, amount);
     }
 
-    public CellCoordinate goUp(Cell[][] arrayOfArrays, int x, int y){
-        Cell cell = new Cell();
-        try {
-            cell = arrayOfArrays[x][y+1];
-        }catch (ArrayIndexOutOfBoundsException exception){
-            return null;
-        }
-        return new CellCoordinate(new int[]{x, y + 1}, cell.getAmount());
+    public CellCoordinate goUp(Cell[][] arrayOfArrays, int x, int y) throws ArrayIndexOutOfBoundsException{
+        //Increase y by 1 and maintain x
+        //If array bound is exceeded throw an exception
+        Cell cell = arrayOfArrays[x][y+1];
+        Integer amount = null;
+        if (Objects.equals(cell.getType(), "coins"))
+            amount = cell.getAmount();
+        return new CellCoordinate(new int[]{x, y + 1}, amount);
     }
 }
