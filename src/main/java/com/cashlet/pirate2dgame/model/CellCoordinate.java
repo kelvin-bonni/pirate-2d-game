@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CellCoordinate {
+    Cell cell;
     int[] coordinate;
     Integer amount;
 }

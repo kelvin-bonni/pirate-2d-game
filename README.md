@@ -1,4 +1,4 @@
-# Automated QA - Data Test App
+# Pirate 2D Game
 
 ## Getting Started
 
@@ -6,16 +6,24 @@ Kindly follow these instructions to set up and run this application on your loca
 
 ### Installation
 
-1. Download and install the latest version of Google Chrome [here](https://www.google.com/chrome)
+1. Download and install the latest version of Docker [here](https://docs.docker.com/)
 
-2. Download and install the Java 8 SDK [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+2. Clone the repository using `git clone https://github.com/kelvin-bonni/pirate-2d-game`
 
-3. Download and extract the latest version of Chrome driver to a specific location [here](https://chromedriver.chromium.org/downloads)
+3. Navigate into the project folder where the Dockerfile is located 
+   
+4. Start the docker
 
-4. Add the location of the Chrome driver from Step #3 to your PATH environment variable
+5. Execute `docker image build -t pirate-2d-game .` in Command Prompt
 
-5. Clone the repository using `git clone https://github.com/kelvin-bonni/data-test-app.git`
+6. Execute `docker container run -p 8080:8080 -d pirate-2d-game` in Command Prompt
 
-6. Follow the readme [here](https://github.com/mPharma/qa-take-home-test) to set up and run the Data Test App on your local machine 
+7. Access the application on `http://localhost:8080`
 
-7. Run the data-test-app jar file in `data-test-app/res`
+(The following steps are for stopping the container)
+
+8. Execute `docker container ps` in Command Prompt
+
+9. Choose the first four letters of the ID of the CONTAINER you wish to stop -> $first_four_letters
+
+10. Execute `docker container stop $first_four_letters` in Command Prompt

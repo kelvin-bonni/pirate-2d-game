@@ -15,7 +15,7 @@ import java.util.Objects;
 public class BusinessLogic {
 
     public PathFindResponse getMapping(Cell[][] arrayOfArrays, int x0, int y0, int xn, int yn){
-        int x = x0, y = y0, score = 0;
+        int x = x0, y = y0, score = 0, numberOfBombs = 0;
 
         List<List<Integer>> array = new ArrayList<>();
         array.add(Arrays.asList(x, y));
@@ -34,12 +34,32 @@ public class BusinessLogic {
                 return null;
             }
 
-            int maxAmount = Math.max(fromRight.getAmount(), fromUp.getAmount());
+            if (Objects.nonNull(fromRight.getAmount()) || Objects.nonNull(fromUp.getAmount())){
+                int maxAmount = Math.max(fromRight.getAmount(), fromUp.getAmount());
 
-            if (maxAmount == fromRight.getAmount())
-                next = fromRight;
-            if (maxAmount == fromUp.getAmount())
-                next = fromUp;
+                if (maxAmount == fromRight.getAmount())
+                    next = fromRight;
+                if (maxAmount == fromUp.getAmount())
+                    next = fromUp;
+            }else{
+                //check for the other options
+                if (Objects.equals(fromRight.getCell().getType(), "bomb")){
+                    next = fromRight;
+                    numberOfBombs++;
+                }else if(Objects.equals(fromUp.getCell().getType(), "bomb")){
+                    next = fromUp;
+                    numberOfBombs++;
+                }
+                //When you hit a rock. Check final array to see if there is a bomb to hit the rock
+                //If rock is next and you already have a bomb. Pick that
+                else if(Objects.equals(fromRight.getCell().getType(), "rock") & numberOfBombs > 0){
+                    next = fromRight;
+                    numberOfBombs--;
+                }else if(Objects.equals(fromUp.getCell().getType(), "rock") & numberOfBombs > 0){
+                    next = fromUp;
+                    numberOfBombs--;
+                }
+            }
 
             if (Objects.isNull(next))
                 return null;
@@ -57,19 +77,13 @@ public class BusinessLogic {
         //Increase x by 1 and maintain y
         //If array bound is exceeded throw an exception
         Cell cell = arrayOfArrays[x+1][y];
-        Integer amount = null;
-        if (Objects.equals(cell.getType(), "coins"))
-            amount = cell.getAmount();
-        return new CellCoordinate(new int[]{x + 1, y}, amount);
+        return new CellCoordinate(cell, new int[]{x + 1, y}, cell.getAmount());
     }
 
     public CellCoordinate goUp(Cell[][] arrayOfArrays, int x, int y) throws ArrayIndexOutOfBoundsException{
         //Increase y by 1 and maintain x
         //If array bound is exceeded throw an exception
         Cell cell = arrayOfArrays[x][y+1];
-        Integer amount = null;
-        if (Objects.equals(cell.getType(), "coins"))
-            amount = cell.getAmount();
-        return new CellCoordinate(new int[]{x, y + 1}, amount);
+        return new CellCoordinate(cell, new int[]{x, y + 1}, cell.getAmount());
     }
 }
